@@ -1,0 +1,51 @@
+﻿<Window x:Class="SfmlGravityWpf.Windows.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="clr-namespace:SfmlGravityWpf.Controls"
+        Title="Gravity Sim" Height="650" Width="825">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <WindowsFormsHost Grid.Column="0">
+            <WindowsFormsHost.Child>
+                <controls:SfmlDrawingSurface x:Name="DrawSurface" SizeChanged="DrawSurface_SizeChanged"/>
+            </WindowsFormsHost.Child>
+        </WindowsFormsHost>
+        
+        <StackPanel Grid.Column="1" Margin="4">
+            <!--<TextBlock>Click drawing area to move circle.</TextBlock>
+            <Button Content="Change Circle Color"
+                    HorizontalAlignment="Left"
+                    Margin="0 4"
+                    Click="Button_Click"/>-->
+            <CheckBox Content="Draw Force Lines"
+                      Checked="DrawForce_Checked"
+                      Unchecked="DrawForce_Unchecked"/>
+            
+            <CheckBox Content="Draw Velocity Lines"
+                      Checked="DrawVelocity_Checked"
+                      Unchecked="DrawVelocity_Unchecked"/>
+            
+            <Button Content="Delete Circles" Margin="0 8 0 0"
+                    Click="DeleteCircles_Click"/>
+            <Button Content="Pause" Margin="0 4 0 0"
+                    Click="PauseUnpause_Click"/>
+            
+            <Grid Margin="0 8 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Mass" Margin="0 0 2 0"/>
+                <TextBox Grid.Column="1" HorizontalAlignment="Stretch"
+                         Text="1000"
+                         TextChanged="MassTextBox_TextChanged"/>
+            </Grid>
+            
+
+        </StackPanel>
+    </Grid>
+</Window>
