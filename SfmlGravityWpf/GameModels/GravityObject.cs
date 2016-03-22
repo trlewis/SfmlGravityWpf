@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.GameModels
+﻿namespace SfmlGravityWpf.GameModels
 {
+    using System.Collections.Generic;
     using SFML.System;
-    using SfmlGravityWpf.Code.Extensions;
+    using Code.Extensions;
 
     public abstract class GravityObject
     {
@@ -17,12 +12,12 @@ namespace SfmlGravityWpf.GameModels
 
         public Vector2f Velocity { get; set; }
 
-        public Vector2f Force { get; set; }
+        protected Vector2f Force { get; set; }
 
         /// <summary>
         /// Center of mass relative to the location of the object
         /// </summary>
-        public virtual Vector2f RelativeCenterOfMass { get; set; }
+        protected Vector2f RelativeCenterOfMass { get; set; }
 
         /// <summary>
         /// The position in absolute space used for calculating phsyics

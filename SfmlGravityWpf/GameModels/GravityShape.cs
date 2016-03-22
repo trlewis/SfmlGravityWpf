@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.GameModels
+﻿namespace SfmlGravityWpf.GameModels
 {
     using SFML.Graphics;
     using SFML.System;
-    using SfmlGravityWpf.Code.Extensions;
+    using Code.Extensions;
 
     public class GravityShape : GravityObject
     {
@@ -19,16 +13,11 @@ namespace SfmlGravityWpf.GameModels
             this.Force = new Vector2f();
             this.Shape = shape;
 
-            if(shape is CircleShape)
-            {
-                var circle = (CircleShape)shape;
-                if (circle.Origin.X == 0 && circle.Origin.Y == 0)
-                    this.RelativeCenterOfMass = new Vector2f(circle.Radius, circle.Radius);
-            }
+            var circle = shape as CircleShape;
+            if(circle != null && circle.Origin.X == 0 && circle.Origin.Y == 0)
+                this.RelativeCenterOfMass = new Vector2f(circle.Radius, circle.Radius);
             else
-            {
                 this.RelativeCenterOfMass = new Vector2f();
-            }            
         }
 
         public Shape Shape { get; set; }

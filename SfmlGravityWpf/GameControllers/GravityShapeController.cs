@@ -1,26 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.Controllers
+﻿namespace SfmlGravityWpf.GameControllers
 {
-    using SfmlGravityWpf.GameModels;
+    using System.Collections.Generic;
+    using GameModels;
     using SFML.System;
     using SFML.Graphics;
 
     public class GravityShapeController
     {
-        private Clock _timer = new Clock();
+        private readonly Clock _timer = new Clock();
         private const float LineMass = 10;
-        private float _lastTick = 0;
+        private float _lastTick;
 
         public GravityShapeController()
         {
             this.IsRunning = true;
             this.GravityShapes = new List<GravityShape>();
-            var timer = new SFML.System.Clock();
         }
 
         public bool DrawForceLines { get; set; }
@@ -47,7 +41,8 @@ namespace SfmlGravityWpf.Controllers
             if (this.DrawForceLines)
                 this.DrawForceField(target);
 
-            this.DrawShapes(target);
+            foreach(var gs in this.GravityShapes)
+                target.Draw(gs.Shape);
 
             if (this.DrawVelocityLines)
                 this.DrawVelocity(target);
@@ -55,7 +50,7 @@ namespace SfmlGravityWpf.Controllers
 
         private void DrawForceField(RenderTarget target)
         {
-            int spacing = 30;
+            const int spacing = 30;
             var xcount = target.Size.X / spacing;
             var ycount = target.Size.Y / spacing;
             
@@ -78,19 +73,11 @@ namespace SfmlGravityWpf.Controllers
             {
                 var start = new Vertex(gs.GlobalCenterOfMass, Color.White);
                 var end = new Vertex(gs.GlobalCenterOfMass + gs.Velocity, purple);
-                var line = new Vertex[] { start, end };
+                var line = new[] { start, end };
                 target.Draw(line, PrimitiveType.Lines);
             }
         }
-
-        private void DrawShapes(RenderTarget target)
-        {
-            foreach(var gs in this.GravityShapes)
-            {
-                target.Draw(gs.Shape);
-            }
-        }
-        
+ 
         public void Pause()
         {
             this.IsRunning = false;
@@ -113,9 +100,16 @@ namespace SfmlGravityWpf.Controllers
             if (!this.IsRunning)
                 return;
 
+            //calculate force, apply force, move. seems like a good order to do things. Since A and B both exert
+            //an equal amount of force on each other, if we do all three for A, then B, by the time B calculates
+            //its force A will have moved, thus have a different force
             this.CalculateForce();
-            this.ApplyForce(dSeconds);
-            this.Move(dSeconds);
+
+            foreach (var gs in this.GravityShapes)
+            {
+                gs.ApplyForce(dSeconds);
+                gs.Move(dSeconds);
+            }
         }
 
         private void CalculateForce()
@@ -127,20 +121,5 @@ namespace SfmlGravityWpf.Controllers
             }
         }
 
-        private void ApplyForce(float dTime)
-        {
-            foreach (var gs in this.GravityShapes)
-            {
-                gs.ApplyForce(dTime);
-            }
-        }
-
-        private void Move(float dTime)
-        {
-            foreach (var gs in this.GravityShapes)
-            {
-                gs.Move(dTime);
-            }
-        }
     }
 }

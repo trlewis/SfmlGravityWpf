@@ -67,6 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="WpfModels\ObservableModel.cs" />
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -77,7 +78,8 @@
     </Compile>
     <Compile Include="Code\Extensions\TransformableExtensionscs.cs" />
     <Compile Include="Code\Extensions\Vector2fExtensions.cs" />
-    <Compile Include="Controllers\GravityShapeController.cs" />
+    <Compile Include="Code\Helpers\PropertyHelper.cs" />
+    <Compile Include="GameControllers\GravityShapeController.cs" />
     <Compile Include="Controls\SfmlDrawingSurface.cs">
       <SubType>Component</SubType>
     </Compile>

@@ -1,67 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace SfmlGravityWpf.Windows
+﻿namespace SfmlGravityWpf.Windows
 {
+    using System;
+    using System.Windows;
+    using System.Windows.Controls;
     using SFML.Graphics;
     using SFML.System;
     using SFML.Window;
     using System.Windows.Threading;
-    using SfmlGravityWpf.Controllers;
-    using SfmlGravityWpf.GameModels;
+    using GameControllers;
+    using GameModels;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow// : Window
+    public partial class MainWindow
     {
-        private CircleShape _circle;
-        private byte _color = 0;
         private RenderWindow _renderWindow;
-        private DispatcherTimer _timer;
         private float _circleMass = 1000;
 
         //for creating new shapes
-        private Vector2f _spawnPosition;
-        private Vector2f _endVelocity;
+        private Vector2f _mouseStartPos;
+        private Vector2f _mouseEndPos;
         private bool _creatingCicle;
 
-        private GravityShapeController _shapeController = new GravityShapeController();
+        private readonly GravityShapeController _shapeController = new GravityShapeController();
 
         public MainWindow()
         {
             InitializeComponent();
 
-            this._circle = new CircleShape(20) { FillColor = Color.Magenta };
             this.CreateRenderWindow();
 
-            this._timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60) };
-            this._timer.Tick += Timer_Tick;
-            this._timer.Start();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            this.ChangeCircleColor();
-        }
-
-        private void ChangeCircleColor()
-        {
-            var rand = new Random();
-            var color = new Color((byte)rand.Next(), (byte)rand.Next(), (byte)rand.Next());
-            this._circle.FillColor = color;
+            var timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 1000 / 60) };
+            timer.Tick += Timer_Tick;
+            timer.Start();
         }
 
         private void CreateRenderWindow()
@@ -77,37 +49,30 @@ namespace SfmlGravityWpf.Windows
             this._renderWindow.MouseButtonPressed += RenderWindow_MouseButtonPressed;
             this._renderWindow.MouseButtonReleased += RenderWindow_MouseButtonReleased;
             this._renderWindow.MouseMoved += RenderWindow_MouseMoved;
-            this._renderWindow.KeyPressed += RenderWindow_KeyPressed;
             this._renderWindow.SetActive(true);
         }
 
         void RenderWindow_MouseMoved(object sender, MouseMoveEventArgs e)
         {
             if (this._creatingCicle)
-                this._endVelocity = new Vector2f(e.X, e.Y);
+                this._mouseEndPos = new Vector2f(e.X, e.Y);
         }
 
         void RenderWindow_MouseButtonReleased(object sender, MouseButtonEventArgs e)
         {
-            //throw new NotImplementedException();
             var endPos = new Vector2f(e.X, e.Y);
-            var vel = endPos - this._spawnPosition;
-            var newShape = new CircleShape(5) { FillColor = Color.Cyan, Position = this._spawnPosition };
+            var vel = endPos - this._mouseStartPos;
+            var newShape = new CircleShape(5) { FillColor = Color.Cyan, Position = this._mouseStartPos };
             var gs = new GravityShape(newShape, this._circleMass) { Velocity = vel };
             this._shapeController.AddGravityShape(gs);
 
             this._creatingCicle = false;
         }
 
-        private void RenderWindow_KeyPressed(object sender, KeyEventArgs e)
-        {
-            this.ChangeCircleColor();
-        }
-
         private void RenderWindow_MouseButtonPressed(object sender, MouseButtonEventArgs e)
         {
-            this._spawnPosition = new Vector2f(e.X, e.Y);
-            this._endVelocity = new Vector2f(e.X, e.Y);
+            this._mouseStartPos = new Vector2f(e.X, e.Y);
+            this._mouseEndPos = new Vector2f(e.X, e.Y);
             this._creatingCicle = true;
         }
 
@@ -128,9 +93,9 @@ namespace SfmlGravityWpf.Windows
 
             if(this._creatingCicle)
             {
-                var startVertex = new Vertex(this._spawnPosition, Color.Magenta);
-                var endVertex = new Vertex(this._endVelocity, Color.Green);
-                Vertex[] line = new Vertex[] { startVertex, endVertex };
+                var startVertex = new Vertex(this._mouseStartPos, Color.Magenta);
+                var endVertex = new Vertex(this._mouseEndPos, Color.Green);
+                var line = new[] { startVertex, endVertex };
                 this._renderWindow.Draw(line, PrimitiveType.Lines);
             }
 
@@ -159,11 +124,9 @@ namespace SfmlGravityWpf.Windows
             else
                 this._shapeController.Run();
 
-            if(sender is Button)
-            {
-                var button = (Button)sender;
+            var button = sender as Button;
+            if(button != null)
                 button.Content = this._shapeController.IsRunning ? "Pause" : "Unpause";
-            }
         }
 
         private void MassTextBox_TextChanged(object sender, TextChangedEventArgs e)
