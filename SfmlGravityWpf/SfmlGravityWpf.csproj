@@ -67,7 +67,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Code\Converters\Bool2Visibility.cs" />
+    <Compile Include="Code\Converters\Float2String.cs" />
+    <Compile Include="Code\Converters\Int2String.cs" />
+    <Compile Include="Code\Extensions\IValueConverterExtensions.cs" />
+    <Compile Include="Code\Extensions\UserControlExtensions.cs" />
+    <Compile Include="Code\Helpers\VisibilityHelper.cs" />
+    <Compile Include="WpfModels\ObservableGravityShapeController.cs" />
     <Compile Include="WpfModels\ObservableModel.cs" />
+    <Page Include="Assets\Converters.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Assets\Resources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -134,6 +149,9 @@
     <Content Include="csfml-window-2.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

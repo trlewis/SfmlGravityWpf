@@ -1,15 +1,16 @@
 ﻿namespace SfmlGravityWpf.WpfModels
 {
+    using Code.Helpers;
     using System;
     using System.ComponentModel;
     using System.Linq.Expressions;
-    using Code.Helpers;
+    using System.Runtime.CompilerServices;
 
     public abstract class ObservableModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
-        protected void NotifyPropertyChanged(string propertyName)
+        protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             if (this.PropertyChanged == null)
                 return;
@@ -26,6 +27,5 @@
             var propertyName = PropertyHelper.GetPropertyName(propertyExpression);
             this.NotifyPropertyChanged(propertyName);
         }
-
     }
 }

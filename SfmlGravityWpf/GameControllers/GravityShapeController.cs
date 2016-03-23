@@ -10,11 +10,39 @@
         private readonly Clock _timer = new Clock();
         private const float LineMass = 10;
         private float _lastTick;
+        private bool _addingShape;
+        private Vector2f _startPoint; //new shape's spawn point, start of initial vector line
+        private Vector2f _endPoint; //used to calculate new shape's initial velocity, end of init velocity line
 
         public GravityShapeController()
         {
             this.IsRunning = true;
             this.GravityShapes = new List<GravityShape>();
+        }
+
+        public void StartNewShape(Vector2f startPoint)
+        {
+            if (this._addingShape)
+                return;
+            this._addingShape = true;
+            this._startPoint = startPoint;
+            this._endPoint = startPoint; //so line is 0 length at start
+        }
+
+        public void UpdateEndPoint(Vector2f endPoint)
+        {
+            if (!this._addingShape)
+                return;
+            this._endPoint = endPoint;
+        }
+
+        public void FinishAddingShape(float mass, float radius)
+        {
+            var vel = this._endPoint - this._startPoint;
+            var circle = new CircleShape(radius) { FillColor = Color.Cyan, Position = this._startPoint};
+            var gs = new GravityShape(circle, mass) { Velocity = vel };
+            this.AddGravityShape(gs);
+            this._addingShape = false;
         }
 
         public bool DrawForceLines { get; set; }
@@ -24,6 +52,11 @@
         private IList<GravityShape> GravityShapes { get; set; }
 
         public bool IsRunning { get; private set; }
+
+        public int ShapeCount
+        {
+            get { return this.GravityShapes.Count; }
+        }
 
         public void AddGravityShape(GravityShape gs)
         {
@@ -46,6 +79,14 @@
 
             if (this.DrawVelocityLines)
                 this.DrawVelocity(target);
+
+            if (this._addingShape)
+            {
+                var startVertex = new Vertex(this._startPoint, Color.Magenta);
+                var endVertex = new Vertex(this._endPoint, Color.Green);
+                var line = new[] { startVertex, endVertex };
+                target.Draw(line, PrimitiveType.Lines);
+            }
         }
 
         private void DrawForceField(RenderTarget target)

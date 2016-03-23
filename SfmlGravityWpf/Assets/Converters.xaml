@@ -1,0 +1,7 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:converters="clr-namespace:SfmlGravityWpf.Code.Converters">
+    <converters:Float2String x:Key="Float2String" />
+    <converters:Int2String x:Key="Int2String"/>
+    <converters:Bool2Visibility x:Key="Bool2Visibility"/>
+</ResourceDictionary>
