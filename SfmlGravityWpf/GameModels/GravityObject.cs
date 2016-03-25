@@ -1,18 +1,20 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
+    using System;
     using System.Collections.Generic;
     using SFML.System;
     using Code.Extensions;
 
     public abstract class GravityObject
     {
-        public const float GravitationalConstant = 9.8f;
+        private const float GravitationalConstant = 0.05f;
+        private const float Epsilon = 2f;
 
         public float Mass { get; set; }
 
         public Vector2f Velocity { get; set; }
 
-        protected Vector2f Force { get; set; }
+        private Vector2f Force { get; set; }
 
         /// <summary>
         /// Center of mass relative to the location of the object
@@ -23,13 +25,6 @@
         /// The position in absolute space used for calculating phsyics
         /// </summary>
         public abstract Vector2f GlobalCenterOfMass { get; }
-
-        /// <summary>
-        /// Moves the object based on it's current velocity and the amount
-        /// of time given.
-        /// </summary>
-        /// <param name="dTime">Time delta in seconds</param>
-        public abstract void Move(float dTime);
 
         /// <summary>
         /// Adjusts the object's velocity based on it's currently experience force. Does not
@@ -56,10 +51,9 @@
         /// <param name="objects">The other objecs that will exert force on this GravityObject</param>
         public void CalculateForce(IEnumerable<GravityObject> objects)
         {
-            // F = G ((m1 * m2) / r^2)
-
-            float fx = 0;
-            float fy = 0;
+            //float fx = 0;
+            //float fy = 0;
+            var totalForce = new Vector2f();
 
             foreach(var obj in objects)
             {
@@ -69,16 +63,26 @@
                 }
                 
                 var distSquared = this.GlobalCenterOfMass.DistanceSquared(obj.GlobalCenterOfMass);
-                var force = GravitationalConstant * ((this.Mass * obj.Mass) / distSquared);
+                //calculate as though the objects are closer so the simulation moves faster.
+                distSquared /= 10;
 
                 var offsetVec = obj.GlobalCenterOfMass - this.GlobalCenterOfMass;
-                offsetVec = offsetVec.Normalize();
+                //var force = GravitationalConstant * ((this.Mass * obj.Mass) / distSquared);
 
-                fx += force * offsetVec.X;
-                fy += force * offsetVec.Y;
+                //found this equation that is seems to help with keeping objects from shooting away from
+                //each other when the distance between them is very small. Keeps the denominator to a minimum
+                //value, but I'm not entirely sure how it works. Found it on a StackExchange post:
+                //http://physics.stackexchange.com/questions/120183/why-does-my-gravity-simulation-do-this
+                var force = GravitationalConstant * (this.Mass * obj.Mass) * offsetVec /
+                            (float)Math.Sqrt(Math.Pow((distSquared + Epsilon * Epsilon), 3));
+
+                //this is still using the Euler method for calculating gravity though. Leapfrog or Verlet
+                //integration would (probably) be better. that's on the to do list though...
+
+                totalForce += force;
             }
 
-            this.Force = new Vector2f(fx, fy);
+            this.Force = totalForce;
         }
     }
 }

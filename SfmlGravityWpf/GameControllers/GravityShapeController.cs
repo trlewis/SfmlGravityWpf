@@ -41,7 +41,7 @@
             var vel = this._endPoint - this._startPoint;
             var circle = new CircleShape(radius) { FillColor = Color.Cyan, Position = this._startPoint};
             var gs = new GravityShape(circle, mass) { Velocity = vel };
-            this.AddGravityShape(gs);
+            this.GravityShapes.Add(gs);
             this._addingShape = false;
         }
 
@@ -56,12 +56,6 @@
         public int ShapeCount
         {
             get { return this.GravityShapes.Count; }
-        }
-
-        public void AddGravityShape(GravityShape gs)
-        {
-            if (!this.GravityShapes.Contains(gs))
-                this.GravityShapes.Add(gs);
         }
 
         public void DeleteShapes()
@@ -141,26 +135,16 @@
             if (!this.IsRunning)
                 return;
 
-            //calculate force, apply force, move. seems like a good order to do things. Since A and B both exert
-            //an equal amount of force on each other, if we do all three for A, then B, by the time B calculates
-            //its force A will have moved, thus have a different force
-            this.CalculateForce();
+            //we want to know the force on all shapes before we move any of them.
+            foreach (var gs in this.GravityShapes)
+                gs.CalculateForce(this.GravityShapes);
 
             foreach (var gs in this.GravityShapes)
             {
                 gs.ApplyForce(dSeconds);
                 gs.Move(dSeconds);
             }
-        }
 
-        private void CalculateForce()
-        {
-            var list = new List<GravityShape>(this.GravityShapes);
-            foreach (var gs in this.GravityShapes)
-            {
-                gs.CalculateForce(list);
-            }
         }
-
     }
 }

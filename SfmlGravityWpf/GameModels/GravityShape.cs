@@ -10,7 +10,6 @@
         {
             this.Mass = mass;
             this.Velocity = new Vector2f();
-            this.Force = new Vector2f();
             this.Shape = shape;
 
             var circle = shape as CircleShape;
@@ -27,7 +26,7 @@
             get { return this.Shape.Position + this.RelativeCenterOfMass; }
         }
 
-        public override void Move(float dTime)
+        public void Move(float dTime)
         {
             var offset = this.Velocity * dTime;
             this.Shape.Move(offset);

@@ -3,7 +3,7 @@
     using System;
     using System.Windows.Data;
 
-    public static class IValueConverterExtensions
+    public static class ValueConverterExtensions
     {
         public static bool IsInverse(this IValueConverter valueConverter, object parameter)
         {

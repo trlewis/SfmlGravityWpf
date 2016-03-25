@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.GameModels
+﻿namespace SfmlGravityWpf.GameModels
 {
-    using SFML.System;
+    using System.Collections.Generic;
+    using Code.Extensions;
     using SFML.Graphics;
-    using SfmlGravityWpf.Code.Extensions;
+    using SFML.System;
 
     public class ForceLine
     {
@@ -19,7 +14,7 @@ namespace SfmlGravityWpf.GameModels
         {
             this._startPos = start;
             this._mass = mass;
-            this.Line = new Vertex[] { new Vertex(start, Color.White), new Vertex(start, Color.Red) };
+            this.Line = new[] { new Vertex(start, Color.White), new Vertex(start, Color.Red) };
         }
 
         public Vertex[] Line { get; private set; }
@@ -27,14 +22,13 @@ namespace SfmlGravityWpf.GameModels
         public void CalculateLine(IEnumerable<GravityObject> objects)
         {
             //just going to use 1 second as the time.
-
             float fx = 0;
             float fy = 0;
 
             foreach(var go in objects)
             {
                 var distSquared = this._startPos.DistanceSquared(go.GlobalCenterOfMass);
-                var force = GravityObject.GravitationalConstant * ((this._mass * go.Mass) / distSquared);
+                var force = ((this._mass * go.Mass) / distSquared);
 
                 var offsetVec = go.GlobalCenterOfMass - this._startPos;
                 offsetVec = offsetVec.Normalize();
@@ -48,7 +42,7 @@ namespace SfmlGravityWpf.GameModels
 
             var endPoint = this._startPos + forceVec;
 
-            this.Line = new Vertex[] { new Vertex(this._startPos, Color.White), new Vertex(endPoint, Color.Red) };
+            this.Line = new[] { new Vertex(this._startPos, Color.White), new Vertex(endPoint, Color.Red) };
         }
     }
 }

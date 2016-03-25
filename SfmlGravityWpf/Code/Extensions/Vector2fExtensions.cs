@@ -1,7 +1,6 @@
 ﻿namespace SfmlGravityWpf.Code.Extensions
 {
     using System;
-    using System.Collections.Generic;
     using SFML.System;
 
     public static class Vector2fExtensions

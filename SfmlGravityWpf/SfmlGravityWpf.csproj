@@ -70,7 +70,7 @@
     <Compile Include="Code\Converters\Bool2Visibility.cs" />
     <Compile Include="Code\Converters\Float2String.cs" />
     <Compile Include="Code\Converters\Int2String.cs" />
-    <Compile Include="Code\Extensions\IValueConverterExtensions.cs" />
+    <Compile Include="Code\Extensions\ValueConverterExtensions.cs" />
     <Compile Include="Code\Extensions\UserControlExtensions.cs" />
     <Compile Include="Code\Helpers\VisibilityHelper.cs" />
     <Compile Include="WpfModels\ObservableGravityShapeController.cs" />

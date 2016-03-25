@@ -1,7 +1,7 @@
 ﻿namespace SfmlGravityWpf.Code.Converters
 {
-    using Code.Extensions;
-    using Code.Helpers;
+    using Extensions;
+    using Helpers;
     using System;
     using System.Windows;
     using System.Windows.Data;

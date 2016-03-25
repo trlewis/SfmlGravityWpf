@@ -3,7 +3,7 @@
     using SFML.Graphics;
     using SFML.System;
     using SFML.Window;
-    using SfmlGravityWpf.GameControllers;
+    using GameControllers;
 
     /// <summary>
     /// Use this class for interacting with a <see cref="GravityShapeController"/> to get
@@ -19,12 +19,7 @@
         {
             this._gsController = gsController;
             this.NewShapeMass = 10000;
-            this.NewRadius = 5;
-        }
-
-        public GravityShapeController GravityShapeController
-        {
-            get { return this._gsController; }
+            this.NewRadius = 3;
         }
 
         public float NewRadius
@@ -120,7 +115,7 @@
         /// </summary>
         public void MouseButtonReleased(object sender, MouseButtonEventArgs e)
         {
-            this._gsController.FinishAddingShape(this._newShapeMass, this._newRadius);
+            this._gsController.FinishAddingShape(this.NewShapeMass, this.NewRadius);
             this.NotifyPropertyChanged(() => this.ShapeCount);
         }
 
@@ -148,5 +143,6 @@
 
             target.Display();
         }
+
     }
 }
