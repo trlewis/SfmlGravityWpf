@@ -1,5 +1,6 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
+    using System;
     using System.Collections.Generic;
     using Code.Extensions;
     using SFML.Graphics;
@@ -22,26 +23,21 @@
         public void CalculateLine(IEnumerable<GravityObject> objects)
         {
             //just going to use 1 second as the time.
-            float fx = 0;
-            float fy = 0;
+            var totalForce = new Vector2f();
 
             foreach(var go in objects)
             {
                 var distSquared = this._startPos.DistanceSquared(go.GlobalCenterOfMass);
-                var force = ((this._mass * go.Mass) / distSquared);
-
+                distSquared /= 10;
                 var offsetVec = go.GlobalCenterOfMass - this._startPos;
-                offsetVec = offsetVec.Normalize();
+                var force = GravityObject.GravitationalConstant * (this._mass * go.Mass) * offsetVec /
+                            (float)Math.Sqrt(Math.Pow((distSquared + GravityObject.Epsilon * GravityObject.Epsilon), 3));
 
-                fx += force * offsetVec.X;
-                fy += force * offsetVec.Y;
+                totalForce += force;
             }
-
-            var forceVec = new Vector2f(fx, fy);
-            forceVec = forceVec.Clamp(20);
-
-            var endPoint = this._startPos + forceVec;
-
+            
+            totalForce = totalForce.Clamp(20);
+            var endPoint = this._startPos + totalForce;
             this.Line = new[] { new Vertex(this._startPos, Color.White), new Vertex(endPoint, Color.Red) };
         }
     }
