@@ -25,10 +25,19 @@
             <TextBlock Text="{Binding ShapeCount, Converter={StaticResource Int2String}, StringFormat='Shapes: \{0\}'}"
                        Margin="0 0 0 4"/>
             
-            <CheckBox Content="Draw Force Lines"
-                      IsChecked="{Binding DrawForceLines, Mode=TwoWay}"/>
+            <CheckBox Content="Draw Gravity Field"
+                      IsChecked="{Binding DrawGravityField, Mode=TwoWay}"/>
+            <RadioButton GroupName="FieldType"
+                         Content="As Lines"
+                         IsChecked="{Binding DrawGravityFieldAsLines, Mode=TwoWay}"
+                         IsEnabled="{Binding DrawGravityField}"/>
+            <RadioButton GroupName="FieldType"
+                         Content="As Gradient"
+                         IsChecked="{Binding DrawGravityFieldAsGradient, Mode=TwoWay}"
+                         IsEnabled="{Binding DrawGravityField}"/>
 
             <CheckBox Content="Draw Velocity Lines"
+                      Margin="0 8 0 0"
                       IsChecked="{Binding DrawVelocityLines, Mode=TwoWay}"/>
 
             <Button Content="Delete Circles" Margin="0 8 0 0"

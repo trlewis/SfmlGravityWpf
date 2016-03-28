@@ -10,11 +10,13 @@
     {
         private readonly Vector2f _startPos;
         private readonly float _mass;
+        private readonly float _maxLength;
 
-        public ForceLine(Vector2f start, float mass)
+        public ForceLine(Vector2f start, float mass, float maxLength)
         {
             this._startPos = start;
             this._mass = mass;
+            this._maxLength = maxLength;
             this.Line = new[] { new Vertex(start, Color.White), new Vertex(start, Color.Red) };
         }
 
@@ -36,7 +38,7 @@
                 totalForce += force;
             }
             
-            totalForce = totalForce.Clamp(20);
+            totalForce = totalForce.Clamp(this._maxLength);
             var endPoint = this._startPos + totalForce;
             this.Line = new[] { new Vertex(this._startPos, Color.White), new Vertex(endPoint, Color.Red) };
         }

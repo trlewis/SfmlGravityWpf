@@ -18,7 +18,7 @@
         public ObservableGravityShapeController(GravityShapeController gsController)
         {
             this._gsController = gsController;
-            this.NewShapeMass = 10000;
+            this.NewShapeMass = 1000;
             this.NewRadius = 3;
         }
 
@@ -49,15 +49,48 @@
             }
         }
 
-        public bool DrawForceLines
+        public bool DrawGravityField
         {
-            get { return this._gsController.DrawForceLines; }
+            get { return this._gsController.DrawGravityField; }
             set
             {
-                if (this._gsController.DrawForceLines == value)
+                if (this._gsController.DrawGravityField == value)
                     return;
-                this._gsController.DrawForceLines = value;
+                this._gsController.DrawGravityField = value;
                 this.NotifyPropertyChanged();
+
+                if (!this._gsController.DrawGravityFieldAsLines && !this._gsController.DrawGravityFieldAsGradient)
+                    this.DrawGravityFieldAsLines = true;
+            }
+        }
+
+        public bool DrawGravityFieldAsLines
+        {
+            get { return this._gsController.DrawGravityFieldAsLines; }
+            set
+            {
+                if (value == this._gsController.DrawGravityFieldAsLines)
+                    return;
+                this._gsController.DrawGravityFieldAsLines = value;
+                this.NotifyPropertyChanged();
+
+                if (value)
+                    this.DrawGravityFieldAsGradient = false;
+            }
+        }
+
+        public bool DrawGravityFieldAsGradient
+        {
+            get { return this._gsController.DrawGravityFieldAsGradient; }
+            set
+            {
+                if (value == this._gsController.DrawGravityFieldAsGradient)
+                    return;
+                this._gsController.DrawGravityFieldAsGradient = value;
+                this.NotifyPropertyChanged();
+
+                if (value)
+                    this.DrawGravityFieldAsLines = false;
             }
         }
 

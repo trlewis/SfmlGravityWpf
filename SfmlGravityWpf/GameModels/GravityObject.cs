@@ -7,7 +7,7 @@
 
     public abstract class GravityObject
     {
-        public const float GravitationalConstant = 0.05f;
+        public const float GravitationalConstant = 0.5f;//0.05f;
         public const float Epsilon = 2f;
 
         public float Mass { get; set; }

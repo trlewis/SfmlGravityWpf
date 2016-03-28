@@ -45,7 +45,11 @@
             this._addingShape = false;
         }
 
-        public bool DrawForceLines { get; set; }
+        public bool DrawGravityField { get; set; }
+
+        public bool DrawGravityFieldAsLines { get; set; }
+
+        public bool DrawGravityFieldAsGradient { get; set; }
 
         public bool DrawVelocityLines { get; set; }
 
@@ -65,7 +69,7 @@
 
         public void Draw(RenderTarget target)
         {
-            if (this.DrawForceLines)
+            if (this.DrawGravityField)
                 this.DrawForceField(target);
 
             foreach(var gs in this.GravityShapes)
@@ -85,19 +89,29 @@
 
         private void DrawForceField(RenderTarget target)
         {
-            const int spacing = 30;
-            var xcount = target.Size.X / spacing;
-            var ycount = target.Size.Y / spacing;
-            
-            for(int y = 0 ; y <= ycount ; y++)
+            if (this.DrawGravityFieldAsLines)
             {
-                for(int x = 0; x <= xcount; x++)
+                const int spacing = 20;
+                for (int y = 0; y <= target.Size.Y / spacing; y++)
                 {
-                    var start = new Vector2f(x * spacing, y * spacing);
-                    var line = new ForceLine(start, LineMass);
-                    line.CalculateLine(this.GravityShapes);
-                    target.Draw(line.Line, PrimitiveType.Lines);
+                    for (int x = 0; x <= target.Size.X / spacing; x++)
+                    {
+                        var start = new Vector2f(x * spacing, y * spacing);
+                        var line = new ForceLine(start, LineMass, spacing);
+                        line.CalculateLine(this.GravityShapes);
+                        target.Draw(line.Line, PrimitiveType.Lines);
+                    }
                 }
+            }
+
+            if (this.DrawGravityFieldAsGradient)
+            {
+                const int spacing = 10;
+                int width = (int)target.Size.X / spacing;
+                int height = (int)target.Size.Y / spacing;
+                var field = new GravityGradientField(spacing, width, height);
+                field.Calculate(this.GravityShapes);
+                field.Draw(target);
             }
         }
 
