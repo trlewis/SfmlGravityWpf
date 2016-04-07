@@ -94,6 +94,18 @@
             }
         }
 
+        public bool DrawMotionTrails
+        {
+            get { return this._gsController.DrawMotionTrails; }
+            set
+            {
+                if (value == this._gsController.DrawMotionTrails)
+                    return;
+                this._gsController.DrawMotionTrails = value;
+                this.NotifyPropertyChanged();
+            }
+        }
+
         public bool DrawVelocityLines
         {
             get { return this._gsController.DrawVelocityLines; }

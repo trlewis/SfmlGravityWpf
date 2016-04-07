@@ -8,6 +8,8 @@
     {
         public GravityShape(Shape shape, float mass)
         {
+            this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
+            
             this.Mass = mass;
             this.Velocity = new Vector2f();
             this.Shape = shape;
@@ -20,6 +22,8 @@
         }
 
         public Shape Shape { get; set; }
+
+        public MotionTrail MotionTrail { get; private set; }
 
         public override Vector2f GlobalCenterOfMass
         {

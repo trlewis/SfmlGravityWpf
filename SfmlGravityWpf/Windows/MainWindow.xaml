@@ -39,6 +39,10 @@
             <CheckBox Content="Draw Velocity Lines"
                       Margin="0 8 0 0"
                       IsChecked="{Binding DrawVelocityLines, Mode=TwoWay}"/>
+            
+            <CheckBox Content="Draw Motion Trails"
+                      Margin="0 8 0 0"
+                      IsChecked="{Binding DrawMotionTrails, Mode=TwoWay}"/>
 
             <Button Content="Delete Circles" Margin="0 8 0 0"
                     Click="DeleteCircles_Click"/>

@@ -74,6 +74,7 @@
     <Compile Include="Code\Extensions\UserControlExtensions.cs" />
     <Compile Include="Code\Helpers\VisibilityHelper.cs" />
     <Compile Include="GameModels\GravityGradientField.cs" />
+    <Compile Include="GameModels\MotionTrail.cs" />
     <Compile Include="WpfModels\ObservableGravityShapeController.cs" />
     <Compile Include="WpfModels\ObservableModel.cs" />
     <Page Include="Assets\Converters.xaml">
@@ -151,9 +152,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

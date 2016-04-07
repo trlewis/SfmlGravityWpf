@@ -51,6 +51,8 @@
 
         public bool DrawGravityFieldAsGradient { get; set; }
 
+        public bool DrawMotionTrails { get; set; }
+
         public bool DrawVelocityLines { get; set; }
 
         private IList<GravityShape> GravityShapes { get; set; }
@@ -72,7 +74,13 @@
             if (this.DrawGravityField)
                 this.DrawForceField(target);
 
-            foreach(var gs in this.GravityShapes)
+            if (this.DrawMotionTrails)
+            {
+                foreach (var gs in this.GravityShapes)
+                    gs.MotionTrail.Draw(target);               
+            }
+
+            foreach (var gs in this.GravityShapes)
                 target.Draw(gs.Shape);
 
             if (this.DrawVelocityLines)
@@ -157,6 +165,7 @@
             {
                 gs.ApplyForce(dSeconds);
                 gs.Move(dSeconds);
+                gs.MotionTrail.AddLocation(gs.GlobalCenterOfMass);
             }
 
         }
