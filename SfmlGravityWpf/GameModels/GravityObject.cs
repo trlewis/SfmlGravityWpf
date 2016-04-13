@@ -10,9 +10,13 @@
         public const float GravitationalConstant = 0.5f;//0.05f;
         public const float Epsilon = 2f;
 
+        private bool _initialVelocitySet;
+
         public float Mass { get; set; }
 
         public Vector2f Velocity { get; set; }
+
+        private Vector2f VelocityHalfStep { get; set; }
 
         private Vector2f Force { get; set; }
 
@@ -26,22 +30,32 @@
         /// </summary>
         public abstract Vector2f GlobalCenterOfMass { get; }
 
-        /// <summary>
-        /// Adjusts the object's velocity based on it's currently experience force. Does not
-        /// move the object, only changes velocity.
-        /// </summary>
-        /// <param name="dTime">Time delta in seconds</param>
-        public void ApplyForce(float dTime)
+        protected abstract Vector2f Position { get; set; }
+
+        public void Move(float dTime)
         {
-            //F = ma -> a = F/m
-            //v = a * dt
+            this.Position += dTime*this.VelocityHalfStep;
+        }
 
-            if(this.Force == null || (this.Force.X == 0 && this.Force.Y == 0))
-                return;
-
+        public void UpdateVelocity(float dTime)
+        {
             var acceleration = this.Force / this.Mass;
-            var dVelocity = acceleration * dTime;
-            this.Velocity += dVelocity;
+            if (this._initialVelocitySet)
+            {
+                this.VelocityHalfStep += dTime*acceleration;
+            }
+            else
+            {
+                this._initialVelocitySet = true;
+
+                //if the particle was given an initial velocity, just use that.
+                if (this.Velocity != new Vector2f(0, 0))
+                    this.VelocityHalfStep = this.Velocity;
+                else
+                    this.VelocityHalfStep = 0.5f*dTime*acceleration;
+            }
+
+            this.Velocity = this.VelocityHalfStep + dTime*acceleration;
         }
 
         /// <summary>
@@ -58,16 +72,12 @@
             foreach(var obj in objects)
             {
                 if(obj == this)
-                {
                     continue;
-                }
-                
+
                 var distSquared = this.GlobalCenterOfMass.DistanceSquared(obj.GlobalCenterOfMass);
                 //calculate as though the objects are closer so the simulation moves faster.
                 distSquared /= 10;
-
                 var offsetVec = obj.GlobalCenterOfMass - this.GlobalCenterOfMass;
-                //var force = GravitationalConstant * ((this.Mass * obj.Mass) / distSquared);
 
                 //found this equation that is seems to help with keeping objects from shooting away from
                 //each other when the distance between them is very small. Keeps the denominator to a minimum
@@ -75,9 +85,6 @@
                 //http://physics.stackexchange.com/questions/120183/why-does-my-gravity-simulation-do-this
                 var force = GravitationalConstant * (this.Mass * obj.Mass) * offsetVec /
                             (float)Math.Sqrt(Math.Pow((distSquared + Epsilon * Epsilon), 3));
-
-                //this is still using the Euler method for calculating gravity though. Leapfrog or Verlet
-                //integration would (probably) be better. that's on the to do list though...
 
                 totalForce += force;
             }

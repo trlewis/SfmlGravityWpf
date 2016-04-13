@@ -2,7 +2,6 @@
 {
     using SFML.Graphics;
     using SFML.System;
-    using Code.Extensions;
 
     public class GravityShape : GravityObject
     {
@@ -30,11 +29,10 @@
             get { return this.Shape.Position + this.RelativeCenterOfMass; }
         }
 
-        public void Move(float dTime)
+        protected override Vector2f Position
         {
-            var offset = this.Velocity * dTime;
-            this.Shape.Move(offset);
+            get { return this.Shape.Position; }
+            set { this.Shape.Position = value; }
         }
-
     }
 }

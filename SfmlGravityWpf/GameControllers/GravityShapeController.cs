@@ -150,24 +150,23 @@
         /// </summary>
         public void Update()
         {
-            var seconds = this._timer.ElapsedTime.AsSeconds();
-            var dSeconds = seconds - this._lastTick;
-            this._lastTick = seconds;
+            //for now we're just going to run it at "60 FPS". It really should be frame independend though.
+            const float dSeconds = 1f/60f;
             
             if (!this.IsRunning)
                 return;
 
-            //we want to know the force on all shapes before we move any of them.
-            foreach (var gs in this.GravityShapes)
-                gs.CalculateForce(this.GravityShapes);
-
             foreach (var gs in this.GravityShapes)
             {
-                gs.ApplyForce(dSeconds);
                 gs.Move(dSeconds);
                 gs.MotionTrail.AddLocation(gs.GlobalCenterOfMass);
             }
 
+            foreach (var gs in this.GravityShapes)
+            {
+                gs.CalculateForce(this.GravityShapes);
+                gs.UpdateVelocity(dSeconds);
+            }
         }
     }
 }
