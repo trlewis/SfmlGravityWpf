@@ -1,5 +1,6 @@
 ﻿namespace SfmlGravityWpf.WpfModels
 {
+    using Code;
     using SFML.Graphics;
     using SFML.System;
     using SFML.Window;
@@ -137,6 +138,11 @@
         public int ShapeCount
         {
             get { return this._gsController.ShapeCount; }
+        }
+
+        public void ModifyNewShapeMass(string directions)
+        {
+            this.NewShapeMass = RegexValueChanger.Change(this.NewShapeMass, directions);
         }
 
         /// <summary>

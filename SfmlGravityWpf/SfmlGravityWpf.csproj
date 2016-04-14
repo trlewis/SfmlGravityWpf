@@ -73,6 +73,7 @@
     <Compile Include="Code\Extensions\ValueConverterExtensions.cs" />
     <Compile Include="Code\Extensions\UserControlExtensions.cs" />
     <Compile Include="Code\Helpers\VisibilityHelper.cs" />
+    <Compile Include="Code\RegexValueChanger.cs" />
     <Compile Include="GameModels\GravityGradientField.cs" />
     <Compile Include="GameModels\MotionTrail.cs" />
     <Compile Include="WpfModels\ObservableGravityShapeController.cs" />

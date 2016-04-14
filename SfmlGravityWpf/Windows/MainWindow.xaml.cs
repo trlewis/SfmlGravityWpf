@@ -1,5 +1,6 @@
 ﻿namespace SfmlGravityWpf.Windows
 {
+    using System.Windows.Controls;
     using Code.Extensions;
     using GameControllers;
     using SFML.Graphics;
@@ -69,5 +70,11 @@
             this._observableGsc.TogglePause();
         }
 
+        private void QuickMassButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            var button = (Button) sender;
+            var directions = (string)button.Content;
+            this._observableGsc.ModifyNewShapeMass(directions);
+        }
     }
 }
