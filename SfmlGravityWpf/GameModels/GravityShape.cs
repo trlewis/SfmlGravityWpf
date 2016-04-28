@@ -5,19 +5,22 @@
 
     public class GravityShape : GravityObject
     {
-        public GravityShape(Shape shape, float mass)
+        protected GravityShape()
         {
             this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
-            
-            this.Mass = mass;
             this.Velocity = new Vector2f();
+        }
+
+        public GravityShape(Shape shape, float mass)
+            : this()
+        {
+            this.Mass = mass;
             this.Shape = shape;
 
+            //TODO: remove this constructor, make gravitycircles their own object
             var circle = shape as CircleShape;
             if(circle != null && circle.Origin.X == 0 && circle.Origin.Y == 0)
                 this.RelativeCenterOfMass = new Vector2f(circle.Radius, circle.Radius);
-            else
-                this.RelativeCenterOfMass = new Vector2f();
         }
 
         public Shape Shape { get; set; }

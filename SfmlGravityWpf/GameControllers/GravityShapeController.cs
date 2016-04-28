@@ -36,12 +36,25 @@
             this._endPoint = endPoint;
         }
 
-        public void FinishAddingShape(float mass, float radius)
+        public void FinishAddingShape(float mass, float radius, GravityShapeType type)
         {
             var vel = this._endPoint - this._startPoint;
-            var circle = new CircleShape(radius) { FillColor = Color.Cyan, Position = this._startPoint};
-            var gs = new GravityShape(circle, mass) { Velocity = vel };
-            this.GravityShapes.Add(gs);
+
+            GravityShape gs = null;
+            switch (type)
+            {
+                case GravityShapeType.Asteroid:
+                    gs = new GravityAsteroid(this._startPoint, mass) {Velocity = vel};
+                    break;
+                case GravityShapeType.Circle:
+                    var circle = new CircleShape(radius) { FillColor = Color.Cyan, Position = this._startPoint};
+                    gs = new GravityShape(circle, mass) {Velocity = vel};
+                    break;
+            }
+
+            if(gs != null)
+                this.GravityShapes.Add(gs);
+
             this._addingShape = false;
         }
 

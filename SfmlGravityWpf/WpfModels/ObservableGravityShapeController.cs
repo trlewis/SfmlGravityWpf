@@ -1,6 +1,7 @@
 ﻿namespace SfmlGravityWpf.WpfModels
 {
     using Code;
+    using GameModels;
     using SFML.Graphics;
     using SFML.System;
     using SFML.Window;
@@ -166,7 +167,18 @@
         /// </summary>
         public void MouseButtonReleased(object sender, MouseButtonEventArgs e)
         {
-            this._gsController.FinishAddingShape(this.NewShapeMass, this.NewRadius);
+            GravityShapeType gst = GravityShapeType.Circle;
+            switch (e.Button)
+            {
+                case Mouse.Button.Left:
+                    gst = GravityShapeType.Circle;
+                    break;
+                case Mouse.Button.Right:
+                    gst = GravityShapeType.Asteroid;
+                    break;
+            }
+
+            this._gsController.FinishAddingShape(this.NewShapeMass, this.NewRadius, gst);
             this.NotifyPropertyChanged(() => this.ShapeCount);
         }
 
