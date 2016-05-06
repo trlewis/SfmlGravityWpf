@@ -50,5 +50,26 @@
             }
             return points;
         }
+
+        /// <summary>
+        /// Gets the "center point" of the polygon.
+        /// </summary>
+        /// <param name="shape"></param>
+        /// <returns></returns>
+        public static Vector2f GetRelativeCenter(this ConvexShape shape)
+        {
+            var points = shape.GetPoints();
+
+            float centerX = 0f;
+            float centerY = 0f;
+
+            for (int i = 0; i < points.Length; i++)
+            {
+                centerX += points[i].X;
+                centerY += points[i].Y;
+            }
+
+            return new Vector2f(centerX / points.Length, centerY / points.Length);
+        }
     }
 }

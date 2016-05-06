@@ -185,6 +185,7 @@
 
         private void CheckCollisions()
         {
+            var toRemove = new List<GravityObject>();
             for (int i = 0; i < this.GravityObjects.Count; i++)
             {
                 var outerCollidable = this.GravityObjects[i] as ICollidableGravityObject;
@@ -201,10 +202,24 @@
                     if (!checker.AreColliding())
                         continue;
 
-                    outerCollidable.HandleCollision(checker.CollisionPoint);
-                    innerCollidable.HandleCollision(checker.CollisionPoint);
+                    outerCollidable.HandleCollision(checker.CollisionPoint, this.GravityObjects[j], this.AddGravityObjects);
+                    innerCollidable.HandleCollision(checker.CollisionPoint, this.GravityObjects[i], this.AddGravityObjects);
+
+                    if(outerCollidable.RemoveOnCollide)
+                        toRemove.Add(this.GravityObjects[i]);
+                    if(innerCollidable.RemoveOnCollide)
+                        toRemove.Add(this.GravityObjects[j]);
                 }
             }
+
+            foreach (var go in toRemove)
+                this.GravityObjects.Remove(go);
+        }
+
+        private void AddGravityObjects(IEnumerable<GravityObject> gravityObjects)
+        {
+            foreach(var go in gravityObjects)
+                this.GravityObjects.Add(go);
         }
     }
 }

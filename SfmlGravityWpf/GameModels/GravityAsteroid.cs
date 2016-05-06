@@ -1,7 +1,9 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
     using System;
+    using System.Collections.Generic;
     using Code.Extensions;
+    using GameCode;
     using SFML.Graphics;
     using SFML.System;
     using Code.Helpers;
@@ -9,40 +11,82 @@
     public class GravityAsteroid : GravityDrawable, ICollidableGravityConvexPolygon
     {
         private readonly ConvexShape _convexShape = new ConvexShape();
+        private readonly float _radius;
 
         public GravityAsteroid(Vector2f position, float mass, float radius = 20, uint pointCount = 6)
             : base(mass)
         {
-            this._convexShape.SetPointCount(pointCount);
+            this._radius = radius;
+            this._convexShape = ConvexShapeHelper.GetRandomConvexShape(pointCount, radius);
             this._convexShape.FillColor = Color.Red;
+            this.RelativeCenterOfMass = this._convexShape.GetRelativeCenter();
+            this._convexShape.Position = position;
+        }
 
-            float rx = 0;
-            float ry = 0;
+        #region ICollidableGravityX members
 
-            var rand = new Random();
+        public bool RemoveOnCollide
+        {
+            get { return true; }
+        }
 
-            for (uint i = 0; i < pointCount; i++)
+        public Rectangle GetBoundingRectangle()
+        {
+            return this._convexShape.GetBoundingRectangle() + this.GlobalCenterOfMass;
+        }
+
+        public void HandleCollision(Vector2f collisionPoint, GravityObject other, Action<IList<GravityObject>> spawnedGravityAction)
+        {
+            this._convexShape.FillColor = ColorHelper.GetRandomColor();
+            var center = this._convexShape.Position;
+
+            //create fragments
+            var fragments = new List<GravityObject>();
+            var globalPoints = this.GetGlobalPoints();
+            var fragmentMass = this.Mass/globalPoints.Length;
+
+            for (int i = 0; i < globalPoints.Length; i++)
             {
-                var angle = (Math.PI * 2 * (i / (double)pointCount));
-                var x = -Math.Sin(angle);//so we're winding it CCW
-                var y = Math.Cos(angle); 
+                var thisPoint = globalPoints[i];
+                var nextPoint = globalPoints[IntHelper.WrapMod(i + 1, globalPoints.Length)];
+                var fragCenterX = (thisPoint.X + nextPoint.X + center.X)/3;
+                var fragCenterY = (thisPoint.Y + nextPoint.Y + center.Y)/3;
 
-                var scale = (float)rand.Next(65, 110)/100;
-                x *= scale;
-                y *= scale;
+                //TODO: come up with a better radius system
+                var fragment = new GravityAsteroidFragment(new Vector2f(fragCenterX, fragCenterY), this._radius/2, fragmentMass);
 
-                var pos = new Vector2f((float)x, (float)y);
-                pos *= radius;
-                this._convexShape.SetPoint(i, pos);
-                rx += pos.X;
-                ry += pos.Y;
+                var angle = Math.PI*2/(globalPoints.Length/(float) i);
+                var vx = (float) Math.Cos(angle) * 22; //extra "outward explosion" movement
+                var vy = (float) -Math.Sin(angle) * 22;
+
+                //TODO: revise to include other object and try to conserve momentum
+                fragment.Velocity = this.Velocity + new Vector2f(vx, vy);
+                fragments.Add(fragment);
             }
 
-            rx /= pointCount;
-            ry /= pointCount;
-            this.RelativeCenterOfMass = new Vector2f(rx, ry);
+            if (spawnedGravityAction != null)
+                spawnedGravityAction(fragments);
+        }
 
-            this._convexShape.Position = position;
+        /// <summary>
+        /// Gets the positions of points of the vertices of the asteroid in absolute space. Not relative to the shape.
+        /// </summary>
+        public Vector2f[] GetGlobalPoints()
+        {
+            var points = this._convexShape.GetPoints();
+            for (int i = 0; i < points.Length; i++)
+                points[i] = points[i] + this._convexShape.Position;
+
+            return points;
+        }
+
+        #endregion ICollidableGravityX members
+
+        #region GravityDrawable members
+
+        public override void Draw(RenderTarget target)
+        {
+            target.Draw(this._convexShape);
         }
 
         public override Vector2f GlobalCenterOfMass
@@ -56,30 +100,6 @@
             set { this._convexShape.Position = value; }
         }
 
-        public override void Draw(RenderTarget target)
-        {
-            target.Draw(this._convexShape);
-        }
-
-        public Vector2f[] GetPoints()
-        {
-            var points = this._convexShape.GetPoints();
-            for (int i = 0; i < points.Length; i++)
-                points[i] = points[i] + this.GlobalCenterOfMass;
-
-            return points;
-        }
-        
-        public Rectangle GetBoundingRectangle()
-        {
-            return this._convexShape.GetBoundingRectangle() + this.GlobalCenterOfMass;
-        }
-
-
-        public void HandleCollision(Vector2f collisionPoint)
-        {
-            //TODO: actually handle collision.
-            this._convexShape.FillColor = ColorHelper.GetRandomColor();
-        }
+        #endregion GravityDrawable members
     }
 }

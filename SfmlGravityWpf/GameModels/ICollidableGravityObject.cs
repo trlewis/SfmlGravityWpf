@@ -1,14 +1,16 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
+    using System;
+    using System.Collections.Generic;
     using SFML.System;
 
     public interface ICollidableGravityObject
     {
-        //CollidableType CollidableType { get; }
+        bool RemoveOnCollide { get; }
 
         Rectangle GetBoundingRectangle();
 
-        void HandleCollision(Vector2f collisionPoint);
+        void HandleCollision(Vector2f collisionPoint, GravityObject other, Action<IList<GravityObject>> spawnedObjectAction);
     }
 
     public interface ICollidableGravityPoint : ICollidableGravityObject
@@ -18,6 +20,6 @@
 
     public interface ICollidableGravityConvexPolygon : ICollidableGravityObject
     {
-        Vector2f[] GetPoints();
+        Vector2f[] GetGlobalPoints();
     }
 }

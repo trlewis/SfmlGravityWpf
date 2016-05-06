@@ -1,9 +1,15 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
+    using System;
+    using System.Collections.Generic;
     using SFML.Graphics;
     using SFML.System;
     using Code.Helpers;
 
+    /// <summary>
+    /// A point-object that has zero-size but has mass and interacts with other GravityObjects via gravity. Points
+    /// cannot collide with each-other but they can collide with objects that do have size.
+    /// </summary>
     public class GravityPoint : GravityDrawable, ICollidableGravityPoint
     {
         private readonly CircleShape _pointShape;
@@ -17,6 +23,33 @@
             if(shape != null && shape.Origin.X == 0 && shape.Origin.Y == 0)
                 this.RelativeCenterOfMass = new Vector2f(shape.Radius, shape.Radius);
         }
+
+        #region ICollidableGravityX members
+
+        public bool RemoveOnCollide
+        {
+            get { return true; }
+        }
+
+        public Rectangle GetBoundingRectangle()
+        {
+            var gsm = this.GlobalCenterOfMass;
+            return new Rectangle(gsm, gsm);
+        }
+
+        public void HandleCollision(Vector2f collisionPoint, GravityObject other, Action<IList<GravityObject>> spawnedGravityAction)
+        {
+            this._pointShape.FillColor = ColorHelper.GetRandomColor();
+        }
+
+        public Vector2f GetPoint()
+        {
+            return this.GlobalCenterOfMass;
+        }
+
+        #endregion ICollidableGravityX members
+
+        #region GravityDrawable members
 
         public override Vector2f GlobalCenterOfMass
         {
@@ -34,20 +67,6 @@
             target.Draw(this._pointShape);
         }
 
-        public Vector2f GetPoint()
-        {
-            return this.GlobalCenterOfMass;
-        }
-
-        public Rectangle GetBoundingRectangle()
-        {
-            var gsm = this.GlobalCenterOfMass;
-            return new Rectangle(gsm, gsm);
-        }
-
-        public void HandleCollision(Vector2f collisionPoint)
-        {
-            this._pointShape.FillColor = ColorHelper.GetRandomColor();
-        }
+        #endregion GravityDrawable members
     }
 }

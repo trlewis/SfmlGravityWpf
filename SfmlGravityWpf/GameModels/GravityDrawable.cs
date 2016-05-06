@@ -1,16 +1,18 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
     using SFML.Graphics;
+    using SFML.System;
 
     public abstract class GravityDrawable : GravityObject, IDrawable
     {
         protected GravityDrawable(float mass)
         {
+            this.Velocity = new Vector2f(0,0);
             this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
             this.Mass = mass;
         }
 
-        public MotionTrail MotionTrail { get; protected set; }
+        public MotionTrail MotionTrail { get; private set; }
 
         public abstract void Draw(RenderTarget target);
 

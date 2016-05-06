@@ -56,7 +56,7 @@
         private bool CheckPointToPolygonCollision(ICollidableGravityPoint point, ICollidableGravityConvexPolygon polygon)
         {
             var pointLoc = point.GetPoint();
-            var polygonPoints = polygon.GetPoints();
+            var polygonPoints = polygon.GetGlobalPoints();
 
             for (int i = 0; i < polygonPoints.Length; i++)
             {
