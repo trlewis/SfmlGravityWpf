@@ -3,6 +3,7 @@
     using System;
     using SFML.System;
 
+    // ReSharper disable once InconsistentNaming
     public static class Vector2fExtensions
     {
         /// <summary>

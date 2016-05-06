@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.GameModels
+﻿namespace SfmlGravityWpf.GameModels
 {
     using SFML.System;
 
@@ -26,29 +20,29 @@ namespace SfmlGravityWpf.GameModels
         /// <summary>
         /// The x position of the left edge
         /// </summary>
-        public float X1 { get; private set; }
+        private float X1 { get; set; }
 
         /// <summary>
         /// The x position of the right edge
         /// </summary>
-        public float X2 { get; private set; }
+        private float X2 { get; set; }
 
         /// <summary>
         /// The y position of the top edge
         /// </summary>
-        public float Y1 { get; private set; }
+        private float Y1 { get; set; }
 
         /// <summary>
         /// the y position of the bottom edge
         /// </summary>
-        public float Y2 { get; private set; }
+        private float Y2 { get; set; }
 
-        public Vector2f TopLeft
+        private Vector2f TopLeft
         {
             get { return new Vector2f(this.X1, this.Y1); }
         }
 
-        public Vector2f BottomRight
+        private Vector2f BottomRight
         {
             get { return new Vector2f(this.X2, this.Y2); }
         }

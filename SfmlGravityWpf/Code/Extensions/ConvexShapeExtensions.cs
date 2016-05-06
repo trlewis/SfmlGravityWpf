@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.Code.Extensions
+﻿namespace SfmlGravityWpf.Code.Extensions
 {
-    using SfmlGravityWpf.GameModels;
+    using GameModels;
     using SFML.Graphics;
     using SFML.System;
 

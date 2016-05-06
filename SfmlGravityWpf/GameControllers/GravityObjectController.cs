@@ -2,16 +2,13 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-
-    using GameModels;
-    using SFML.System;
-    using SFML.Graphics;
-
     using GameCode;
+    using GameModels;
+    using SFML.Graphics;
+    using SFML.System;
 
     public class GravityObjectController
     {
-        private readonly Clock _timer = new Clock();
         private const float LineMass = 10;
         private bool _addingShape;
         private Vector2f _startPoint; //new shape's spawn point, start of initial vector line
@@ -90,7 +87,7 @@
             if (this.DrawGravityField)
                 this.DrawForceField(target);
 
-            var drawables = this.GravityObjects.Where(g => g is GravityDrawable).Select(g => (GravityDrawable)g);
+            var drawables = this.GravityObjects.OfType<GravityDrawable>().ToList();
 
             if (this.DrawMotionTrails)
             {

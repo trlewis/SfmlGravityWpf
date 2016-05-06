@@ -1,20 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SfmlGravityWpf.GameCode
+﻿namespace SfmlGravityWpf.GameCode
 {
-    using SfmlGravityWpf.GameModels;
-    using SfmlGravityWpf.Code.Helpers;
-    using SfmlGravityWpf.Code.Extensions;
-
+    using Code.Extensions;
+    using Code.Helpers;
+    using GameModels;
     using SFML.System;
 
     public class CollisionChecker
     {
-
         private readonly ICollidableGravityObject _first;
         private readonly ICollidableGravityObject _second;
 
@@ -63,13 +55,11 @@ namespace SfmlGravityWpf.GameCode
 
         private bool CheckPointToPolygonCollision(ICollidableGravityPoint point, ICollidableGravityConvexPolygon polygon)
         {
-            //return true;
             var pointLoc = point.GetPoint();
             var polygonPoints = polygon.GetPoints();
 
             for (int i = 0; i < polygonPoints.Length; i++)
             {
-                //var prev = points[IntHelper.WrapMod(i - 1, points.Length)];
                 var current = polygonPoints[i];
                 var next = polygonPoints[IntHelper.WrapMod(i + 1, polygonPoints.Length)];
                 var offsetToNext = next - current;

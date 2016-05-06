@@ -4,42 +4,34 @@
     using SFML.System;
     using Code.Helpers;
 
-    public class GravityPoint : GravityDrawable, IDrawable, ICollidableGravityPoint
+    public class GravityPoint : GravityDrawable, ICollidableGravityPoint
     {
-        protected GravityPoint()
-        {
-            this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
-            this.Velocity = new Vector2f();
-        }
+        private readonly CircleShape _pointShape;
 
         public GravityPoint(CircleShape shape, float mass)
-            : this()
+            : base(mass)
         {
-            this.Mass = mass;
-            this.PointShape = shape;
+            this._pointShape = shape;
 
             //TODO: remove this constructor, make gravitycircles their own object
-            var circle = shape as CircleShape;
-            if(circle != null && circle.Origin.X == 0 && circle.Origin.Y == 0)
-                this.RelativeCenterOfMass = new Vector2f(circle.Radius, circle.Radius);
+            if(shape != null && shape.Origin.X == 0 && shape.Origin.Y == 0)
+                this.RelativeCenterOfMass = new Vector2f(shape.Radius, shape.Radius);
         }
 
-        public CircleShape PointShape { get; set; }
-        
         public override Vector2f GlobalCenterOfMass
         {
-            get { return this.PointShape.Position + this.RelativeCenterOfMass; }
+            get { return this._pointShape.Position + this.RelativeCenterOfMass; }
         }
 
         protected override Vector2f Position
         {
-            get { return this.PointShape.Position; }
-            set { this.PointShape.Position = value; }
+            get { return this._pointShape.Position; }
+            set { this._pointShape.Position = value; }
         }
 
         public override void Draw(RenderTarget target)
         {
-            target.Draw(this.PointShape);
+            target.Draw(this._pointShape);
         }
 
         public Vector2f GetPoint()
@@ -53,10 +45,9 @@
             return new Rectangle(gsm, gsm);
         }
 
-
         public void HandleCollision(Vector2f collisionPoint)
         {
-            this.PointShape.FillColor = ColorHelper.GetRandomColor();
+            this._pointShape.FillColor = ColorHelper.GetRandomColor();
         }
     }
 }

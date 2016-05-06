@@ -1,7 +1,7 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
     using System;
-    using SfmlGravityWpf.Code.Extensions;
+    using Code.Extensions;
     using SFML.Graphics;
     using SFML.System;
     using Code.Helpers;
@@ -11,10 +11,8 @@
         private readonly ConvexShape _convexShape = new ConvexShape();
 
         public GravityAsteroid(Vector2f position, float mass, float radius = 20, uint pointCount = 6)
+            : base(mass)
         {
-            this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
-
-            this.Mass = mass;
             this._convexShape.SetPointCount(pointCount);
             this._convexShape.FillColor = Color.Red;
 
