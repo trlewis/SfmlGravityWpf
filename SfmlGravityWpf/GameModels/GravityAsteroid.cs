@@ -4,12 +4,14 @@
     using SFML.Graphics;
     using SFML.System;
 
-    public class GravityAsteroid : GravityShape
+    public class GravityAsteroid : GravityDrawable
     {
         private readonly ConvexShape _convexShape = new ConvexShape();
 
         public GravityAsteroid(Vector2f position, float mass, float radius = 20, uint pointCount = 6)
         {
+            this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
+
             this.Mass = mass;
             this._convexShape.SetPointCount(pointCount);
             this._convexShape.FillColor = Color.Red;
@@ -41,8 +43,22 @@
             this.RelativeCenterOfMass = new Vector2f(rx, ry);
 
             this._convexShape.Position = position;
-            this.Shape = this._convexShape;
         }
 
+        public override Vector2f GlobalCenterOfMass
+        {
+            get { return this._convexShape.Position + this.RelativeCenterOfMass; }
+        }
+
+        protected override Vector2f Position
+        {
+            get { return this._convexShape.Position; }
+            set { this._convexShape.Position = value; }
+        }
+
+        public override void Draw(RenderTarget target)
+        {
+            target.Draw(this._convexShape);
+        }
     }
 }

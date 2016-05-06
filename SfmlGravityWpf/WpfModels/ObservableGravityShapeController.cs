@@ -8,16 +8,16 @@
     using GameControllers;
 
     /// <summary>
-    /// Use this class for interacting with a <see cref="GravityShapeController"/> to get
+    /// Use this class for interacting with a <see cref="GravityObjectController"/> to get
     /// the benefits of XAML binding and whatnot.
     /// </summary>
     public class ObservableGravityShapeController : ObservableModel
     {
-        private readonly GravityShapeController _gsController;
+        private readonly GravityObjectController _gsController;
         private float _newRadius;//radius of new shapes
         private float _newShapeMass;
 
-        public ObservableGravityShapeController(GravityShapeController gsController)
+        public ObservableGravityShapeController(GravityObjectController gsController)
         {
             this._gsController = gsController;
             this.NewShapeMass = 1000;
@@ -167,14 +167,14 @@
         /// </summary>
         public void MouseButtonReleased(object sender, MouseButtonEventArgs e)
         {
-            GravityShapeType gst = GravityShapeType.Circle;
+            GravityObjectType gst = GravityObjectType.Circle;
             switch (e.Button)
             {
                 case Mouse.Button.Left:
-                    gst = GravityShapeType.Circle;
+                    gst = GravityObjectType.Circle;
                     break;
                 case Mouse.Button.Right:
-                    gst = GravityShapeType.Asteroid;
+                    gst = GravityObjectType.Asteroid;
                     break;
             }
 

@@ -22,7 +22,7 @@
         {
             InitializeComponent();
 
-            this._observableGsc = new ObservableGravityShapeController(new GravityShapeController());
+            this._observableGsc = new ObservableGravityShapeController(new GravityObjectController());
             this.BindDataContext(this._observableGsc);
             this.CreateRenderWindow();
 

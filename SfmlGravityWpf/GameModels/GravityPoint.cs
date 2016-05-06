@@ -3,19 +3,19 @@
     using SFML.Graphics;
     using SFML.System;
 
-    public class GravityShape : GravityObject
+    public class GravityPoint : GravityDrawable, IDrawable
     {
-        protected GravityShape()
+        protected GravityPoint()
         {
             this.MotionTrail = new MotionTrail(MotionTrailType.FadingLine);
             this.Velocity = new Vector2f();
         }
 
-        public GravityShape(Shape shape, float mass)
+        public GravityPoint(CircleShape shape, float mass)
             : this()
         {
             this.Mass = mass;
-            this.Shape = shape;
+            this.PointShape = shape;
 
             //TODO: remove this constructor, make gravitycircles their own object
             var circle = shape as CircleShape;
@@ -23,19 +23,24 @@
                 this.RelativeCenterOfMass = new Vector2f(circle.Radius, circle.Radius);
         }
 
-        public Shape Shape { get; set; }
+        public CircleShape PointShape { get; set; }
 
-        public MotionTrail MotionTrail { get; private set; }
+        //public MotionTrail MotionTrail { get; private set; }
 
         public override Vector2f GlobalCenterOfMass
         {
-            get { return this.Shape.Position + this.RelativeCenterOfMass; }
+            get { return this.PointShape.Position + this.RelativeCenterOfMass; }
         }
 
         protected override Vector2f Position
         {
-            get { return this.Shape.Position; }
-            set { this.Shape.Position = value; }
+            get { return this.PointShape.Position; }
+            set { this.PointShape.Position = value; }
+        }
+
+        public override void Draw(RenderTarget target)
+        {
+            target.Draw(this.PointShape);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
-    public enum GravityShapeType
+    public enum GravityObjectType
     {
         Circle,
         Asteroid,

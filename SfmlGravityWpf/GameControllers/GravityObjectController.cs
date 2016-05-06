@@ -1,23 +1,24 @@
 ﻿namespace SfmlGravityWpf.GameControllers
 {
     using System.Collections.Generic;
+    using System.Linq;
+
     using GameModels;
     using SFML.System;
     using SFML.Graphics;
 
-    public class GravityShapeController
+    public class GravityObjectController
     {
         private readonly Clock _timer = new Clock();
         private const float LineMass = 10;
-        private float _lastTick;
         private bool _addingShape;
         private Vector2f _startPoint; //new shape's spawn point, start of initial vector line
         private Vector2f _endPoint; //used to calculate new shape's initial velocity, end of init velocity line
 
-        public GravityShapeController()
+        public GravityObjectController()
         {
             this.IsRunning = true;
-            this.GravityShapes = new List<GravityShape>();
+            this.GravityObjects = new List<GravityObject>();
         }
 
         public void StartNewShape(Vector2f startPoint)
@@ -36,24 +37,24 @@
             this._endPoint = endPoint;
         }
 
-        public void FinishAddingShape(float mass, float radius, GravityShapeType type)
+        public void FinishAddingShape(float mass, float radius, GravityObjectType type)
         {
             var vel = this._endPoint - this._startPoint;
 
-            GravityShape gs = null;
+            GravityObject gs = null;
             switch (type)
             {
-                case GravityShapeType.Asteroid:
+                case GravityObjectType.Asteroid:
                     gs = new GravityAsteroid(this._startPoint, mass) {Velocity = vel};
                     break;
-                case GravityShapeType.Circle:
+                case GravityObjectType.Circle:
                     var circle = new CircleShape(radius) { FillColor = Color.Cyan, Position = this._startPoint};
-                    gs = new GravityShape(circle, mass) {Velocity = vel};
+                    gs = new GravityPoint(circle, mass) {Velocity = vel};
                     break;
             }
 
             if(gs != null)
-                this.GravityShapes.Add(gs);
+                this.GravityObjects.Add(gs);
 
             this._addingShape = false;
         }
@@ -68,18 +69,18 @@
 
         public bool DrawVelocityLines { get; set; }
 
-        private IList<GravityShape> GravityShapes { get; set; }
+        private IList<GravityObject> GravityObjects { get; set; }
 
         public bool IsRunning { get; private set; }
 
         public int ShapeCount
         {
-            get { return this.GravityShapes.Count; }
+            get { return this.GravityObjects.Count; }
         }
 
         public void DeleteShapes()
         {
-            this.GravityShapes.Clear();
+            this.GravityObjects.Clear();
         }
 
         public void Draw(RenderTarget target)
@@ -87,14 +88,16 @@
             if (this.DrawGravityField)
                 this.DrawForceField(target);
 
+            var drawables = this.GravityObjects.Where(g => g is GravityDrawable).Select(g => (GravityDrawable)g);
+
             if (this.DrawMotionTrails)
             {
-                foreach (var gs in this.GravityShapes)
-                    gs.MotionTrail.Draw(target);               
+                foreach (var gd in drawables)
+                    gd.MotionTrail.Draw(target);              
             }
 
-            foreach (var gs in this.GravityShapes)
-                target.Draw(gs.Shape);
+            foreach (var gd in drawables)
+                gd.Draw(target);
 
             if (this.DrawVelocityLines)
                 this.DrawVelocity(target);
@@ -119,7 +122,7 @@
                     {
                         var start = new Vector2f(x * spacing, y * spacing);
                         var line = new ForceLine(start, LineMass, spacing);
-                        line.CalculateLine(this.GravityShapes);
+                        line.CalculateLine(this.GravityObjects);
                         target.Draw(line.Line, PrimitiveType.Lines);
                     }
                 }
@@ -131,7 +134,7 @@
                 int width = (int)target.Size.X / spacing;
                 int height = (int)target.Size.Y / spacing;
                 var field = new GravityGradientField(spacing, width, height);
-                field.Calculate(this.GravityShapes);
+                field.Calculate(this.GravityObjects);
                 field.Draw(target);
             }
         }
@@ -139,7 +142,7 @@
         private void DrawVelocity(RenderTarget target)
         {
             var purple = new Color(153, 0, 255);
-            foreach(var gs in this.GravityShapes)
+            foreach (var gs in this.GravityObjects)
             {
                 var start = new Vertex(gs.GlobalCenterOfMass, Color.White);
                 var end = new Vertex(gs.GlobalCenterOfMass + gs.Velocity, purple);
@@ -169,16 +172,13 @@
             if (!this.IsRunning)
                 return;
 
-            foreach (var gs in this.GravityShapes)
-            {
-                gs.Move(dSeconds);
-                gs.MotionTrail.AddLocation(gs.GlobalCenterOfMass);
-            }
+            foreach (var go in this.GravityObjects)
+                go.Move(dSeconds);
 
-            foreach (var gs in this.GravityShapes)
+            foreach (var go in this.GravityObjects)
             {
-                gs.CalculateForce(this.GravityShapes);
-                gs.UpdateVelocity(dSeconds);
+                go.CalculateForce(this.GravityObjects);
+                go.UpdateVelocity(dSeconds);
             }
         }
     }

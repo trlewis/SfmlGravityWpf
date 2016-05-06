@@ -32,7 +32,7 @@
 
         protected abstract Vector2f Position { get; set; }
 
-        public void Move(float dTime)
+        public virtual void Move(float dTime)
         {
             this.Position += dTime*this.VelocityHalfStep;
         }

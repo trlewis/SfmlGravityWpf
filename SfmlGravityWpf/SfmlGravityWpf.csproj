@@ -75,8 +75,10 @@
     <Compile Include="Code\Helpers\VisibilityHelper.cs" />
     <Compile Include="Code\RegexValueChanger.cs" />
     <Compile Include="GameModels\GravityAsteroid.cs" />
+    <Compile Include="GameModels\GravityDrawable.cs" />
     <Compile Include="GameModels\GravityGradientField.cs" />
-    <Compile Include="GameModels\GravityShapeType.cs" />
+    <Compile Include="GameModels\GravityObjectType.cs" />
+    <Compile Include="GameModels\IDrawable.cs" />
     <Compile Include="GameModels\MotionTrail.cs" />
     <Compile Include="WpfModels\ObservableGravityShapeController.cs" />
     <Compile Include="WpfModels\ObservableModel.cs" />
@@ -99,13 +101,13 @@
     <Compile Include="Code\Extensions\TransformableExtensionscs.cs" />
     <Compile Include="Code\Extensions\Vector2fExtensions.cs" />
     <Compile Include="Code\Helpers\PropertyHelper.cs" />
-    <Compile Include="GameControllers\GravityShapeController.cs" />
+    <Compile Include="GameControllers\GravityObjectController.cs" />
     <Compile Include="Controls\SfmlDrawingSurface.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GameModels\ForceLine.cs" />
     <Compile Include="GameModels\GravityObject.cs" />
-    <Compile Include="GameModels\GravityShape.cs" />
+    <Compile Include="GameModels\GravityPoint.cs" />
     <Compile Include="Windows\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
