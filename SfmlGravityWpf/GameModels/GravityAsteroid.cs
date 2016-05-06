@@ -1,10 +1,12 @@
 ﻿namespace SfmlGravityWpf.GameModels
 {
     using System;
+    using SfmlGravityWpf.Code.Extensions;
     using SFML.Graphics;
     using SFML.System;
+    using Code.Helpers;
 
-    public class GravityAsteroid : GravityDrawable
+    public class GravityAsteroid : GravityDrawable, ICollidableGravityConvexPolygon
     {
         private readonly ConvexShape _convexShape = new ConvexShape();
 
@@ -24,8 +26,8 @@
             for (uint i = 0; i < pointCount; i++)
             {
                 var angle = (Math.PI * 2 * (i / (double)pointCount));
-                var x = Math.Sin(angle);
-                var y = Math.Cos(angle);
+                var x = -Math.Sin(angle);//so we're winding it CCW
+                var y = Math.Cos(angle); 
 
                 var scale = (float)rand.Next(65, 110)/100;
                 x *= scale;
@@ -59,6 +61,27 @@
         public override void Draw(RenderTarget target)
         {
             target.Draw(this._convexShape);
+        }
+
+        public Vector2f[] GetPoints()
+        {
+            var points = this._convexShape.GetPoints();
+            for (int i = 0; i < points.Length; i++)
+                points[i] = points[i] + this.GlobalCenterOfMass;
+
+            return points;
+        }
+        
+        public Rectangle GetBoundingRectangle()
+        {
+            return this._convexShape.GetBoundingRectangle() + this.GlobalCenterOfMass;
+        }
+
+
+        public void HandleCollision(Vector2f collisionPoint)
+        {
+            //TODO: actually handle collision.
+            this._convexShape.FillColor = ColorHelper.GetRandomColor();
         }
     }
 }

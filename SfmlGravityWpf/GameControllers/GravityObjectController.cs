@@ -7,6 +7,8 @@
     using SFML.System;
     using SFML.Graphics;
 
+    using GameCode;
+
     public class GravityObjectController
     {
         private readonly Clock _timer = new Clock();
@@ -175,10 +177,36 @@
             foreach (var go in this.GravityObjects)
                 go.Move(dSeconds);
 
+            this.CheckCollisions();
+
             foreach (var go in this.GravityObjects)
             {
                 go.CalculateForce(this.GravityObjects);
                 go.UpdateVelocity(dSeconds);
+            }
+        }
+
+        private void CheckCollisions()
+        {
+            for (int i = 0; i < this.GravityObjects.Count; i++)
+            {
+                var outerCollidable = this.GravityObjects[i] as ICollidableGravityObject;
+                if (outerCollidable == null)
+                    continue;
+
+                for (int j = i + 1; j < this.GravityObjects.Count; j++)
+                {
+                    var innerCollidable = this.GravityObjects[j] as ICollidableGravityObject;
+                    if (innerCollidable == null)
+                        continue;
+
+                    var checker = new CollisionChecker(outerCollidable, innerCollidable);
+                    if (!checker.AreColliding())
+                        continue;
+
+                    outerCollidable.HandleCollision(checker.CollisionPoint);
+                    innerCollidable.HandleCollision(checker.CollisionPoint);
+                }
             }
         }
     }

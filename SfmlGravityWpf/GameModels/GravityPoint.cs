@@ -2,8 +2,9 @@
 {
     using SFML.Graphics;
     using SFML.System;
+    using Code.Helpers;
 
-    public class GravityPoint : GravityDrawable, IDrawable
+    public class GravityPoint : GravityDrawable, IDrawable, ICollidableGravityPoint
     {
         protected GravityPoint()
         {
@@ -24,9 +25,7 @@
         }
 
         public CircleShape PointShape { get; set; }
-
-        //public MotionTrail MotionTrail { get; private set; }
-
+        
         public override Vector2f GlobalCenterOfMass
         {
             get { return this.PointShape.Position + this.RelativeCenterOfMass; }
@@ -41,6 +40,23 @@
         public override void Draw(RenderTarget target)
         {
             target.Draw(this.PointShape);
+        }
+
+        public Vector2f GetPoint()
+        {
+            return this.GlobalCenterOfMass;
+        }
+
+        public Rectangle GetBoundingRectangle()
+        {
+            var gsm = this.GlobalCenterOfMass;
+            return new Rectangle(gsm, gsm);
+        }
+
+
+        public void HandleCollision(Vector2f collisionPoint)
+        {
+            this.PointShape.FillColor = ColorHelper.GetRandomColor();
         }
     }
 }
