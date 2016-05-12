@@ -78,7 +78,9 @@
     <Compile Include="Code\Helpers\VisibilityHelper.cs" />
     <Compile Include="Code\RegexValueChanger.cs" />
     <Compile Include="GameCode\CollisionChecker.cs" />
+    <Compile Include="GameCode\CollisionParticleFactory.cs" />
     <Compile Include="GameCode\ConvexShapeHelper.cs" />
+    <Compile Include="GameModels\CollisionParticle.cs" />
     <Compile Include="GameModels\GravityAsteroid.cs" />
     <Compile Include="GameModels\GravityAsteroidFragment.cs" />
     <Compile Include="GameModels\GravityDrawable.cs" />

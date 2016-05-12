@@ -36,6 +36,11 @@
             }
         }
 
+        public int ParticleCount
+        {
+            get { return this._gsController.ParticleCount; }
+        }
+
         /// <summary>
         /// The mass of a new shape
         /// </summary>
@@ -167,7 +172,7 @@
         /// </summary>
         public void MouseButtonReleased(object sender, MouseButtonEventArgs e)
         {
-            GravityObjectType gst = GravityObjectType.Circle;
+            var gst = GravityObjectType.Circle;
             switch (e.Button)
             {
                 case Mouse.Button.Left:
@@ -182,9 +187,9 @@
             this.NotifyPropertyChanged(() => this.ShapeCount);
         }
 
-        public void DeleteShapes()
+        public void DeleteObjects()
         {
-            this._gsController.DeleteShapes();
+            this._gsController.DeleteObjects();
             this.NotifyPropertyChanged(() => this.ShapeCount);
         }
 
@@ -205,6 +210,8 @@
             this._gsController.Draw(target);
 
             target.Display();
+
+            this.NotifyPropertyChanged(() => this.ParticleCount);
         }
 
     }

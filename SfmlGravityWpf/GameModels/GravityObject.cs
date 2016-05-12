@@ -32,6 +32,17 @@
 
         protected abstract Vector2f Position { get; set; }
 
+        public Vector2f GetMomentum()
+        {
+            return this.Velocity*this.Mass;
+        }
+
+        public void AddMomentum(Vector2f momentum)
+        {
+            var dv = momentum/this.Mass;
+            this.Velocity += dv;
+        }
+
         public virtual void Move(float dTime)
         {
             this.Position += dTime*this.VelocityHalfStep;
@@ -65,8 +76,6 @@
         /// <param name="objects">The other objecs that will exert force on this GravityObject</param>
         public void CalculateForce(IEnumerable<GravityObject> objects)
         {
-            //float fx = 0;
-            //float fy = 0;
             var totalForce = new Vector2f();
 
             foreach(var obj in objects)

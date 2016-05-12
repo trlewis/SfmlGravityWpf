@@ -22,7 +22,9 @@
         </WindowsFormsHost>
 
         <StackPanel Grid.Column="1" Margin="4">
-            <TextBlock Text="{Binding ShapeCount, Converter={StaticResource Int2String}, StringFormat='Shapes: \{0\}'}"
+            <TextBlock Text="{Binding ShapeCount, Converter={StaticResource Int2String}, StringFormat='Objects: \{0\}'}"
+                       Margin="0 0 0 4"/>
+            <TextBlock Text="{Binding ParticleCount, Converter={StaticResource Int2String}, StringFormat='Particles: \{0\}'}"
                        Margin="0 0 0 4"/>
             
             <CheckBox Content="Draw Gravity Field"
@@ -44,8 +46,8 @@
                       Margin="0 8 0 0"
                       IsChecked="{Binding DrawMotionTrails, Mode=TwoWay}"/>
 
-            <Button Content="Delete Circles" Margin="0 8 0 0"
-                    Click="DeleteCircles_Click"/>
+            <Button Content="Delete Objects" Margin="0 8 0 0"
+                    Click="DeleteObjects_Click"/>
             
             <Button Content="Pause" Margin="0 4 0 0"
                     Click="PauseUnpause_Click"

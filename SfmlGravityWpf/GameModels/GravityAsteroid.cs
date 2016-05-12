@@ -39,11 +39,14 @@
         {
             this._convexShape.FillColor = ColorHelper.GetRandomColor();
             var center = this._convexShape.Position;
+            const float explosionSpeed = 23;
 
             //create fragments
             var fragments = new List<GravityObject>();
             var globalPoints = this.GetGlobalPoints();
             var fragmentMass = this.Mass/globalPoints.Length;
+
+            var otherMomentumToAdd = other.GetMomentum()/globalPoints.Length;
 
             for (int i = 0; i < globalPoints.Length; i++)
             {
@@ -56,11 +59,11 @@
                 var fragment = new GravityAsteroidFragment(new Vector2f(fragCenterX, fragCenterY), this._radius/2, fragmentMass);
 
                 var angle = Math.PI*2/(globalPoints.Length/(float) i);
-                var vx = (float) Math.Cos(angle) * 22; //extra "outward explosion" movement
-                var vy = (float) -Math.Sin(angle) * 22;
+                var vx = (float) Math.Cos(angle) * explosionSpeed; //extra "outward explosion" movement
+                var vy = (float) -Math.Sin(angle) * explosionSpeed;
 
-                //TODO: revise to include other object and try to conserve momentum
                 fragment.Velocity = this.Velocity + new Vector2f(vx, vy);
+                fragment.AddMomentum(otherMomentumToAdd);
                 fragments.Add(fragment);
             }
 

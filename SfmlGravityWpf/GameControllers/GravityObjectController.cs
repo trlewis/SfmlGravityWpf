@@ -13,11 +13,13 @@
         private bool _addingShape;
         private Vector2f _startPoint; //new shape's spawn point, start of initial vector line
         private Vector2f _endPoint; //used to calculate new shape's initial velocity, end of init velocity line
+        private readonly List<CollisionParticle> _particles; 
 
         public GravityObjectController()
         {
             this.IsRunning = true;
             this.GravityObjects = new List<GravityObject>();
+            this._particles = new List<CollisionParticle>();
         }
 
         public void StartNewShape(Vector2f startPoint)
@@ -72,14 +74,20 @@
 
         public bool IsRunning { get; private set; }
 
+        public int ParticleCount
+        {
+            get { return this._particles.Count; }
+        }
+
         public int ShapeCount
         {
             get { return this.GravityObjects.Count; }
         }
 
-        public void DeleteShapes()
+        public void DeleteObjects()
         {
             this.GravityObjects.Clear();
+            this._particles.Clear();
         }
 
         public void Draw(RenderTarget target)
@@ -108,6 +116,9 @@
                 var line = new[] { startVertex, endVertex };
                 target.Draw(line, PrimitiveType.Lines);
             }
+
+            foreach(var p in this._particles)
+                p.Draw(target);
         }
 
         private void DrawForceField(RenderTarget target)
@@ -181,6 +192,17 @@
                 go.CalculateForce(this.GravityObjects);
                 go.UpdateVelocity(dSeconds);
             }
+
+            var particlesToRemove = new List<CollisionParticle>();
+            foreach (var p in this._particles)
+            {
+                p.Update(dSeconds);
+                if(p.IsDead)
+                    particlesToRemove.Add(p);
+            }
+
+            foreach (var p in particlesToRemove)
+                this._particles.Remove(p);
         }
 
         private void CheckCollisions()
@@ -188,12 +210,14 @@
             var toRemove = new List<GravityObject>();
             for (int i = 0; i < this.GravityObjects.Count; i++)
             {
+                var outer = this.GravityObjects[i];
                 var outerCollidable = this.GravityObjects[i] as ICollidableGravityObject;
                 if (outerCollidable == null)
                     continue;
 
                 for (int j = i + 1; j < this.GravityObjects.Count; j++)
                 {
+                    var inner = this.GravityObjects[j];
                     var innerCollidable = this.GravityObjects[j] as ICollidableGravityObject;
                     if (innerCollidable == null)
                         continue;
@@ -206,9 +230,14 @@
                     innerCollidable.HandleCollision(checker.CollisionPoint, this.GravityObjects[i], this.AddGravityObjects);
 
                     if(outerCollidable.RemoveOnCollide)
-                        toRemove.Add(this.GravityObjects[i]);
+                        toRemove.Add(outer);
                     if(innerCollidable.RemoveOnCollide)
-                        toRemove.Add(this.GravityObjects[j]);
+                        toRemove.Add(inner);
+
+                    //add new particles
+                    var avgVelocity = (inner.Velocity + outer.Velocity)/2;
+                    var newParticles = CollisionParticleFactory.CreateParticles(checker.CollisionPoint, avgVelocity);
+                    this._particles.AddRange(newParticles);
                 }
             }
 

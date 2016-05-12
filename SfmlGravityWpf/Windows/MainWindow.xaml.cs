@@ -60,9 +60,9 @@
             this._observableGsc.Draw(this._renderWindow);
         }
 
-        private void DeleteCircles_Click(object sender, RoutedEventArgs e)
+        private void DeleteObjects_Click(object sender, RoutedEventArgs e)
         {
-            this._observableGsc.DeleteShapes();
+            this._observableGsc.DeleteObjects();
         }
 
         private void PauseUnpause_Click(object sender, RoutedEventArgs e)
