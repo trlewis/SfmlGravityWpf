@@ -39,7 +39,7 @@
         {
             this._convexShape.FillColor = ColorHelper.GetRandomColor();
             var center = this._convexShape.Position;
-            const float explosionSpeed = 23;
+            const float explosionSpeed = 28; //TODO: a better system than this
 
             //create fragments
             var fragments = new List<GravityObject>();
@@ -54,9 +54,10 @@
                 var nextPoint = globalPoints[IntHelper.WrapMod(i + 1, globalPoints.Length)];
                 var fragCenterX = (thisPoint.X + nextPoint.X + center.X)/3;
                 var fragCenterY = (thisPoint.Y + nextPoint.Y + center.Y)/3;
+                var fragCenter = new Vector2f(fragCenterX, fragCenterY);
 
-                //TODO: come up with a better radius system
-                var fragment = new GravityAsteroidFragment(new Vector2f(fragCenterX, fragCenterY), this._radius/2, fragmentMass);
+                var vertices = new[] { thisPoint - fragCenter, nextPoint - fragCenter, center - fragCenter};
+                var fragment = new GravityAsteroidFragment(new Vector2f(fragCenterX, fragCenterY), vertices, fragmentMass);
 
                 var angle = Math.PI*2/(globalPoints.Length/(float) i);
                 var vx = (float) Math.Cos(angle) * explosionSpeed; //extra "outward explosion" movement

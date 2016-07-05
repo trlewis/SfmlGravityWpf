@@ -24,6 +24,27 @@
             this.RelativeCenterOfMass = this._triangle.GetRelativeCenter();
             this._triangle.Position = position;
             
+            this.SetRandomRotation();
+        }
+
+        public GravityAsteroidFragment(Vector2f position, Vector2f[] points, float mass)
+            : base(mass)
+        {
+            if(points.Length < 3)
+                throw new ArgumentException("vertex array must be of size 3 or greater", "points");
+
+            this._triangle = new ConvexShape((uint)points.Length);
+            this._triangle.FillColor = Color.Red;
+            this.RelativeCenterOfMass = this._triangle.GetRelativeCenter();
+            this._triangle.Position = position;
+
+            for (uint i = 0; i < points.Length; i++)
+                this._triangle.SetPoint(i, points[i]);
+        }
+
+        private void SetRandomRotation()
+        {
+            var position = this._triangle.Position; //using position as a seed
             var rand = new Random((int)position.X + (int)position.Y);
             var angle = rand.Next(360);
             this._triangle.Rotation = angle;
